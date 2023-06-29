@@ -78,6 +78,7 @@ $hprim = new HprimFactory();
               foreach($datas AS $key=>$data){
                 echo '<div  id="list-item-'.$key.'" class="row align-items-start border-bottom">';
                 foreach($data AS $key=>$obj){
+                  if ($obj->value)
                   echo '<div class="col-2">'.$obj->descr.'<br/>'.(($obj->error) ? '<span class="badge bg-warning" data-toggle="tooltip" data-placement="top" title="'.implode(',', $obj->desc_error).'"><i class="bi bi-exclamation-triangle-fill"></i></span>':'').'<b> '.$obj->value.'</b></div>';
                 }
                 echo '</div>';

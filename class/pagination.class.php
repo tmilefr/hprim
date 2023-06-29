@@ -56,7 +56,7 @@ class Pagination
      * @return void
      */
     public function GetCurrentKey(){
-        return (($_GET['nb']) ? $_GET['nb']:0);
+        return ((isset($_GET['nb'])) ? $_GET['nb']:0);
     }
     
     /**

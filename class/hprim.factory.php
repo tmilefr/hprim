@@ -1,8 +1,6 @@
 <?php
 
-require_once('./class/filemanip.class.php');
-require_once('./class/MapHprim.class.php');
-require_once('./class/Pagination.class.php');
+require_once './class/autoloader.php';
 
 /**
  * HprimFactory
