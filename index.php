@@ -59,7 +59,7 @@ $hprim = new HprimFactory();
                 <div  id="navbar-typehprim">
                   <div id="list-typehprim" class="list-group">
                     <?php 
-                    $datas = $hprim->_get('processed');
+                    $datas = $hprim->GetParsed();
                     foreach($datas AS $key=>$data){
                       echo '<a class="list-group-item list-group-item-action" href="#list-item-'.$key.'">'.$data[0]->value.'</a>';
                     }
@@ -74,7 +74,7 @@ $hprim = new HprimFactory();
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-1 mb-1 border-bottom">
           <div data-spy="scroll" data-target="#list-example" data-offset="0" class="scrollspy-example">
               <?php
-              $datas = $hprim->_get('processed');
+              $datas = $hprim->GetParsed();
               foreach($datas AS $key=>$data){
                 echo '<div  id="list-item-'.$key.'" class="row align-items-start border-bottom">';
                 foreach($data AS $key=>$obj){

@@ -8,20 +8,39 @@ class filemanip{
     protected $_debug = FALSE;
     protected $_working_dir = '';
     protected $ListFiles = [];
-
-    function __construct($_working_dir)
+    
+    /**
+     * Method __construct
+     *
+     * @param $_working_dir $_working_dir [explicite description]
+     *
+     * @return void
+     */
+    function __construct($_working_dir = './')
     {
         $this->_working_dir = $_working_dir;
         $this->_SetListFiles();
     }
-
+    
+    /**
+     * Method ParseFile
+     *
+     * @param $file $file [explicite description]
+     *
+     * @return void
+     */
     function ParseFile($file){
         if ( $this->_file =  $this->_working_dir.$file) {
             $this->_get_content();
             $this->_parse_content();
         }
     }
-
+    
+    /**
+     * Method _SetListFiles
+     *
+     * @return void
+     */
     private function _SetListFiles(){
         $this->ListFiles = array_diff(scandir($this->_working_dir) , array('..', '.'));
     }
@@ -38,12 +57,26 @@ class filemanip{
             echo 'Exception reçue : ',  $e->getMessage(), "\n";
         }
     }
-
+    
+    /**
+     * Method GetSize
+     *
+     * @param $file $file [explicite description]
+     *
+     * @return void
+     */
     public function GetSize($file){
         $size = filesize($this->_working_dir.$file);
         return $this->human_filesize($size);
     }
-
+    
+    /**
+     * Method _parse_content
+     *
+     * @param $sep $sep [explicite description]
+     *
+     * @return void
+     */
     private function _parse_content($sep = '|'){
         try {
             foreach($this->_datas AS $key=>$data){
@@ -54,8 +87,16 @@ class filemanip{
             echo 'Exception reçue : ',  $e->getMessage(), "\n";
         }
     }
-
-    function human_filesize($bytes, $decimals = 2) {
+    
+    /**
+     * Method human_filesize
+     *
+     * @param $bytes $bytes [explicite description]
+     * @param $decimals $decimals [explicite description]
+     *
+     * @return void
+     */
+    function human_filesize($bytes = 0, $decimals = 2) {
         $sz = 'BKMGTP';
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];

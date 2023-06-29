@@ -2,8 +2,10 @@
 
 class MapHprim{
 
-    protected $_map = [];
-    protected $_debug = FALSE;
+    protected $_map          = [];
+    protected $_debug        = FALSE;
+    protected $processed     = [];
+    protected $lgnFileParsed = [];
 
     function __construct()
     {
@@ -123,41 +125,51 @@ class MapHprim{
 
     }
 
-    public function Process($lgn){
-        $parsed = [];
-        if ( $maps = $this->_GetMap($lgn[0]) ){
-            foreach($maps AS $key => $map){
-                $res = new StdClass();
-                $res->key = $key;
-                $res->error = false;
-                $res->desc_error  = [];
-                $res->descr = $map->descr;
-                $res->value = trim($lgn[$key]);
-                if ($map->prop == 'O'){
-                    if (!$res->value){
-                        $res->error = TRUE;
-                        $res->desc_error[] = $map->prop;
-                    }
-                }
-                if (strlen($res->value) > $map->size){
-                    $res->error = TRUE;
-                    $res->desc_error[] = ' FIELD OVERSIZE ('.strlen($res->value).' > '.$map->size.' )';
-                }
+    public function Process(){
+        if (count($this->lgnFileParsed) > 0){
+            foreach($this->lgnFileParsed AS $lgnkey=>$lgn){
+                $parsed = [];
+                if ( $maps = $this->_GetMap($lgn[0])){
+                    foreach($maps AS $key => $map){
+                        $res = new StdClass();
+                        $res->key = $key;
+                        $res->error = false;
+                        $res->desc_error  = [];
+                        $res->descr = $map->descr;
+                        $res->value = trim($lgn[$key]);
+                        if ($map->prop == 'O'){
+                            if (!$res->value){
+                                $res->error = TRUE;
+                                $res->desc_error[] = $map->prop;
+                            }
+                        }
+                        if (strlen($res->value) > $map->size){
+                            $res->error = TRUE;
+                            $res->desc_error[] = ' FIELD OVERSIZE ('.strlen($res->value).' > '.$map->size.' )';
+                        }
 
-                if ($res->value  && count($map->values) && !in_array($res->value, $map->values)){
-                    $res->error = TRUE;
-                    $res->desc_error[] = 'NOT IN ('.implode(',', $map->values).')';
-                }                
-                $res->value = str_replace('~', ' ', $res->value);
-                $parsed[$key] = $this->_ParseType($res, $map);
-            } 
+                        if ($res->value  && count($map->values) && !in_array($res->value, $map->values)){
+                            $res->error = TRUE;
+                            $res->desc_error[] = 'NOT IN ('.implode(',', $map->values).')';
+                        }                
+                        $res->value = str_replace('~', ' ', $res->value); 
+                        $parsed[$key] = $this->_ParseType($res, $map);
+                    } 
+                }
+                $this->processed[$lgnkey] =$parsed;
+            }
         }
-        //$this->_debug($parsed);
-        return  $parsed;
     }
-
+    
+    /**
+     * Method _ParseType
+     *
+     * @param $obj object [explicite description]
+     * @param $map array() [explicite description]
+     *
+     * @return $obj
+     */
     private function _ParseType($obj, $map){
-        
         try {
             switch($map->type){
                 case 'AD':
@@ -188,29 +200,44 @@ class MapHprim{
 
                 break;
             }
+            return $obj;
         } catch (Exception $e) {
             echo 'Exception reçue : ',  $e->getMessage(), "\n";
         }        
-        return $obj;
+       
     }
 
-
+    
+    /**
+     * Method _GetMap
+     *
+     * @param $type $type [explicite description]
+     *
+     * @return array
+     */
     private function _GetMap($type){
         return  ((isset($this->_map[$type])) ? $this->_map[$type]:FALSE);
     }
 
-    /*
-    Type
-
-    O : obligatoire
-    F : facultatif
-    E : renseigné par l'exécutant
-    R : répétiteur autorisé
-    C : consigné (à retourner à l'identique s'il a été renseigné par l'émetteur)
-
-
-    */
-
+    /**********
+     * Type
+     * O : obligatoire
+     * F : facultatif
+     * R : répétiteur autorisé
+     * E : renseigné par l'exécutant
+     * C : consigné (à retourner à l'identique s'il a été renseigné par l'émetteur)
+     * 
+     * Method _setObj
+     *
+     * @param $prop $prop [explicite description]
+     * @param $size $size [explicite description]
+     * @param $type $type [explicite description]
+     * @param $values $values [explicite description]
+     * @param $descr $descr [explicite description]
+     * @param $sep $sep [explicite description]
+     *
+     * @return void
+     */
     private function _setObj($prop, $size, $type , $values = [], $descr = '', $sep = ''){
         $obj = new stdClass();
         $obj->prop = $prop;
@@ -229,7 +256,8 @@ class MapHprim{
      */
     function __destruct()
     {
-        $this->_debug($this);
+        if ($this->_debug)
+            $this->_debug($this);
     }
     
     /**
@@ -240,8 +268,7 @@ class MapHprim{
      * @return void
      */
     private function _debug($obj){
-        if ($this->_debug)
-            echo '<pre>'.print_r($obj, 'TRUE').'</pre>';
+        echo '<pre>'.print_r($obj, 'TRUE').'</pre>';
     }
 
     /**

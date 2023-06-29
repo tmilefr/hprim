@@ -2,24 +2,44 @@
 
 class Pagination
 {
-    private $data;
-    private $itemsPerPage;
-    private $chunks;
-    private $numLinksDisplayed;
-
-    public function __construct($data, $itemsPerPage, $numLinksDisplayed = 5)
+    protected $data   = [];
+    protected $itemsPerPage = 20;
+    protected $chunks = [];
+    protected $numLinksDisplayed = 5;
+    protected $_debug;
+    
+    /**
+     * Method __construct
+     *
+     * @param $data $data [explicite description]
+     * @param $itemsPerPage $itemsPerPage [explicite description]
+     * @param $numLinksDisplayed $numLinksDisplayed [explicite description]
+     *
+     * @return void
+     */
+    public function __construct($data = [], $itemsPerPage = 20, $numLinksDisplayed = 5)
     {
         $this->data = $data;
         $this->itemsPerPage = $itemsPerPage;
         $this->numLinksDisplayed = $numLinksDisplayed;
         $this->chunks = $this->calculateChunks();
     }
-
+    
+    /**
+     * Method calculateChunks
+     *
+     * @return array 
+     */
     private function calculateChunks()
     {
         return array_chunk($this->data, $this->itemsPerPage);
     }
-
+    
+    /**
+     * Method getCurrentPage
+     *
+     * @return integer $currentPage
+     */
     public function getCurrentPage()
     {
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -29,19 +49,39 @@ class Pagination
         }
         return $currentPage;
     }
-
+    
+    /**
+     * Method GetCurrentKey
+     *
+     * @return void
+     */
     public function GetCurrentKey(){
         return (($_GET['nb']) ? $_GET['nb']:0);
     }
-
+    
+    /**
+     * Method GetCurrentElement
+     *
+     * @return void
+     */
     public function GetCurrentElement(){
         return $this->chunks[$this->getCurrentPage() - 1][$this->GetCurrentKey()];
     }
-
+    
+    /**
+     * Method GetCurrentChunk
+     *
+     * @return array()
+     */
     public function GetCurrentChunk(){
        return $this->chunks[$this->getCurrentPage() - 1];
     }
-
+    
+    /**
+     * Method showPageItems
+     *
+     * @return void
+     */
     public function showPageItems()
     {
         $currentPage = $this->getCurrentPage();
@@ -53,7 +93,12 @@ class Pagination
         }
         echo '</ul>';
     }
-
+    
+    /**
+     * Method showPagination
+     *
+     * @return void
+     */
     public function showPagination()
     {
         $currentPage = $this->getCurrentPage();
@@ -82,6 +127,51 @@ class Pagination
         echo '</ul>';
         echo '</nav>';
     }
+
+    /**
+     * Method __destruct
+     *
+     * @return void
+     */
+    function __destruct()
+    {
+        if ($this->_debug)
+            $this->_debug($this);
+    }
+    
+    /**
+     * Method _debug
+     *
+     * @param $obj $obj [explicite description]
+     *
+     * @return void
+     */
+    private function _debug($obj){
+        echo '<pre>'.print_r($obj, 'TRUE').'</pre>';
+    }
+    
+    /**
+	 * @brief Generic SETTER
+	 * @param $field 
+	 * @param $value 
+	 * @returns 
+	 * 
+	 * 
+	 */
+	public function _set($field,$value){
+		$this->$field = $value;
+	}
+
+	/**
+	 * @brief Generic GETTER
+	 * @param $field 
+	 * @returns 
+	 * 
+	 * 
+	 */
+	public function _get($field){
+		return $this->$field;
+	}
 }
 
 ?>
