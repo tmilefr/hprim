@@ -1,3 +1,5 @@
 
 datas/messages/*
 php_errors.log
+*.hl7
+*.OK

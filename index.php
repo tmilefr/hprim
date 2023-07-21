@@ -1,8 +1,8 @@
 <?php
 error_reporting(E_ALL);
-
-require('./class/hprim.factory.php');
-$hprim = new HprimFactory();
+$_version = 'Parse Protocol Version 1.0';
+require('./class/Parse.factory.php');
+$hprim = new ParseFactory('./datas/Pharma/', 10, 4);
 
 
 ?>
@@ -11,7 +11,7 @@ $hprim = new HprimFactory();
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>H.PR.I.M. Version 1.2</title>
+    <title><?php echo $_version;?></title>
   </head>
   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/dist/css/bootstrap-icons.css" rel="stylesheet">
@@ -21,14 +21,23 @@ $hprim = new HprimFactory();
 </head>
 <body data-spy="scroll" data-target="#navbar-typehprim">
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">H.PR.I.M. Version 1.2</a>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#"><?php echo $_version;?></a>
+    
+    
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="navbar-nav">
       <div class="nav-item text-nowrap">
-        <a class="nav-link px-3" href="#">.</a>
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="mr-2 d-none d-lg-inline text-gray-600 small">option</span>
+          </a>
+          <!-- Dropdown - User Information -->
+          <div class="dropdown-menu dropdown-menu" aria-labelledby="userDropdown">
+            <a class="dropdown-item" href=""><span class="oi oi-person"></span> </a>
+            <a class="dropdown-item" href=""><span class="oi oi-account-logout"></span> </a>
+          </div>
       </div>
     </div>
   </header>
@@ -78,8 +87,8 @@ $hprim = new HprimFactory();
               foreach($datas AS $key=>$data){
                 echo '<div  id="list-item-'.$key.'" class="row align-items-start border-bottom">';
                 foreach($data AS $key=>$obj){
-                  if ($obj->value)
-                  echo '<div class="col-2">'.$obj->descr.'<br/>'.(($obj->error) ? '<span class="badge bg-warning" data-toggle="tooltip" data-placement="top" title="'.implode(',', $obj->desc_error).'"><i class="bi bi-exclamation-triangle-fill"></i></span>':'').'<b> '.$obj->value.'</b></div>';
+                  //if ($obj->value)
+                  echo '<div class="col-2">'.$obj->descr.'<br/>'.(($obj->error) ? '<span class="badge bg-warning" data-toggle="tooltip" data-placement="top" title="'.implode(',', $obj->desc_error).'"><i class="bi bi-exclamation-triangle-fill"></i></span>':'').'<b> '.utf8_encode($obj->value).'</b></div>';
                 }
                 echo '</div>';
               } ?>
