@@ -28,16 +28,16 @@ class HprimFactory{
         /* PARSE FILE */
         $this->_files       = new filemanip('./datas/messages/'); //Objet fichier 
         $this->_pagination  = new Pagination($this->_files->_get('ListFiles'), 10, 4); //Objet pagination
-        $this->_maphprim    = new MapHprim(); //Objet parsing HPRIM
+        $this->_map         = new MapProtocol(); //Objet parsing HPRIM
 
         $this->_files->_set('_debug',       $this->_debug);
         $this->_pagination->_set('_debug',  $this->_debug);
-        $this->_maphprim->_set('_debug',    $this->_debug);
+        $this->_map->_set('_debug',    $this->_debug);
 
         /* Utilisation des classes : processus */
         $this->_files->ParseFile( $this->GetFileInProgess() ); //on parse le fichier en cours, dépend de la pagination : page : xx et numéro de fichier yy
-        $this->_maphprim->_set('lgnFileParsed', $this->_files->_get('_parsed'));
-        $this->_maphprim->process();
+        $this->_map->_set('lgnFileParsed', $this->_files->_get('_parsed'));
+        $this->_map->process();
     }
     
     /**
@@ -46,7 +46,7 @@ class HprimFactory{
      * @return array()
      */
     function GetParsed(){
-        return $this->_maphprim->_get('processed');
+        return $this->_map->_get('processed');
     }
     
     /**
