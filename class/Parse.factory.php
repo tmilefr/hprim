@@ -22,7 +22,7 @@ class ParseFactory{
      *
      * @return void
      */
-    function __construct($path = './datas/messages/', $itemsPerPage = null ,$numLinksDisplayed = null)
+    function __construct($path = './datas/', $itemsPerPage = null ,$numLinksDisplayed = null)
     {
         
         /* PARSE FILE */

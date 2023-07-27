@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 $_version = 'Parse Protocol Version 1.0';
 require('./class/Parse.factory.php');
-$hprim = new ParseFactory('./datas/messages/', 10, 4);
+$hprim = new ParseFactory('./datas/', 10, 4);
 
 
 ?>
